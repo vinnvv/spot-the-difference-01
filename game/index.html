@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Thirteenth Chime, a Spot the Difference Game</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header class="hud">
+    <h1>The Thirteenth <span class="chime">Chime</span></h1>
+    <div class="readouts">
+      <span class="readout" id="remaining">8 Remaining</span>
+      <span class="readout" id="timer">0:00</span>
+      <span class="readout" id="score">Score 0</span>
+    </div>
+    <button id="hint-btn" type="button">Hint (<span id="hints-left">5 hints left</span>)</button>
+    <button id="reset-btn" type="button" class="ghost">Reset</button>
+  </header>
+
+  <main id="stage">
+    <div class="panel" id="panel-a">
+      <span class="tag">Reality A</span>
+      <div class="scene"></div>
+      <div class="markers"></div>
+      <div class="hint-layer"></div>
+    </div>
+    <div class="divider" aria-hidden="true"></div>
+    <div class="panel" id="panel-b">
+      <span class="tag">Reality B</span>
+      <div class="scene"></div>
+      <div class="markers"></div>
+      <div class="hint-layer"></div>
+    </div>
+    <svg id="link-layer" aria-hidden="true"></svg>
+    <div id="crosshair" aria-hidden="true"></div>
+  </main>
+
+  <footer class="tracker">
+    <span class="label">Chime Tracker</span>
+    <div id="tracker-pips" aria-label="Differences found"></div>
+    <p id="find-log">The thirteenth chime fractured time. Find all 8 glitches.</p>
+  </footer>
+  <p class="keys-hint">Click a difference on either picture, or use arrow keys to move the crosshair and Enter to mark. H for a hint, R to reset.</p>
+</div>
+
+<div class="overlay" id="start-overlay">
+  <div class="card">
+    <h2>The Thirteenth Chime</h2>
+    <p>A rogue thirteenth chime has fractured time inside the clockmaker's canal-side workshop. Two nearly identical realities sit side by side, with <strong>8 temporal glitches</strong> hiding between them.</p>
+    <p>Click a difference on either picture to repair it. A coral ring appears on both panels, and the chime tracker lights a gear.</p>
+    <div class="difficulties">
+      <button type="button" data-difficulty="apprentice"><strong>Apprentice</strong><span>Untimed, 5 hints. Learn the workshop.</span></button>
+      <button type="button" data-difficulty="journeyman"><strong>Journeyman</strong><span>5 minutes on the clock, 3 hints.</span></button>
+      <button type="button" data-difficulty="master"><strong>Master</strong><span>3 minutes, 1 hint, misclicks cost 25.</span></button>
+    </div>
+    <p class="fine">Keyboard: arrows move the crosshair, Enter marks, H hints, R resets. No sound files, no network, just the workshop.</p>
+  </div>
+</div>
+
+<div class="overlay hidden" id="end-modal">
+  <div class="card">
+    <h2 id="end-title">Time Restored</h2>
+    <p id="end-rank"></p>
+    <div id="end-stats"></div>
+    <button type="button" class="primary" id="play-again-btn">Play Again</button>
+  </div>
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

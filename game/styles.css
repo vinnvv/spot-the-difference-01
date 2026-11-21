@@ -1,0 +1,382 @@
+/* The Thirteenth Chime: midnight indigo frame, warm brass and amber accents,
+   cream parchment text. System fonts only, no external assets. */
+:root {
+  --indigo: #141b2d;
+  --indigo-deep: #0e1320;
+  --slate: #283b5b;
+  --mahogany: #4a2c2a;
+  --amber: #f4a236;
+  --brass: #c98a2e;
+  --cream: #f6ebd8;
+  --coral: #d95d48;
+  --teal: #2e7d7b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--indigo-deep);
+  color: var(--cream);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 10px 14px 14px;
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- HUD ---------- */
+header.hud {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--slate);
+  border: 2px solid var(--brass);
+  border-radius: 10px;
+  padding: 8px 16px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+header.hud h1 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+header.hud h1 .chime { color: var(--amber); }
+
+.hud .readouts {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.readout {
+  background: var(--indigo);
+  border: 1px solid var(--brass);
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--cream);
+  white-space: nowrap;
+}
+
+.readout.urgent { color: var(--coral); border-color: var(--coral); animation: pulse 1s infinite; }
+
+@keyframes pulse { 50% { opacity: 0.55; } }
+
+.hud button {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--indigo);
+  background: var(--amber);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.hud button:hover { background: #ffbe5c; }
+.hud button.ghost { background: transparent; color: var(--cream); border: 1px solid var(--brass); }
+.hud button.ghost:hover { background: rgba(244, 162, 54, 0.18); }
+
+/* ---------- Stage ---------- */
+#stage {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  margin-top: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#stage.shake { animation: shake 0.3s; }
+@keyframes shake {
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+.panel {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 3px solid var(--mahogany);
+  outline: 1px solid var(--brass);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--indigo);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.5);
+}
+
+.panel .tag {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  z-index: 5;
+  background: rgba(20, 27, 45, 0.85);
+  border: 1px solid var(--brass);
+  color: var(--cream);
+  font-size: 13px;
+  padding: 2px 9px;
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+/* The scene fills its panel; the SVG scales to fit it (preserveAspectRatio
+   meet, the default), so the art keeps its ratio and letterboxes inside the
+   panel instead of leaving a dead band at the bottom of the page. */
+.panel .scene {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  line-height: 0;
+  cursor: crosshair;
+}
+.panel .scene svg { width: 100%; height: 100%; display: block; }
+
+.markers, .hint-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+.ring {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  border: 3px solid var(--coral);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(246, 235, 216, 0.75), 0 0 16px rgba(217, 93, 72, 0.9);
+  animation: ring-in 0.35s ease-out;
+}
+
+@keyframes ring-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.hint-halo {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 1;
+  border: 3px dashed var(--amber);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(244, 162, 54, 0.8);
+  animation: halo-pulse 0.8s infinite alternate;
+}
+
+@keyframes halo-pulse { from { opacity: 0.55; } to { opacity: 1; } }
+
+.divider {
+  width: 10px;
+  background: linear-gradient(var(--brass), var(--mahogany), var(--brass));
+  border-radius: 5px;
+  flex: none;
+}
+
+#link-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+}
+
+#link-layer.show { opacity: 1; transition: opacity 0.25s; }
+
+#link-layer .link-arc {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 3;
+  stroke-dasharray: 8 6;
+}
+
+#crosshair {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  pointer-events: none;
+  z-index: 7;
+  opacity: 0;
+}
+
+#crosshair.visible { opacity: 1; }
+
+#crosshair::before, #crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--amber);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+}
+
+#crosshair::before { left: 16px; top: 0; width: 2px; height: 34px; }
+#crosshair::after { top: 16px; left: 0; width: 34px; height: 2px; }
+
+.penalty {
+  position: absolute;
+  z-index: 8;
+  color: var(--coral);
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: float-up 0.9s ease-out forwards;
+}
+
+@keyframes float-up {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-34px); }
+}
+
+/* ---------- Tracker ---------- */
+footer.tracker {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  background: var(--slate);
+  border: 2px solid var(--brass);
+  border-radius: 10px;
+  padding: 8px 16px;
+}
+
+footer.tracker .label {
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--amber);
+  white-space: nowrap;
+}
+
+#tracker-pips { display: flex; gap: 8px; }
+
+.pip {
+  font-size: 22px;
+  color: #3a4a6b;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+
+.pip.lit { color: var(--amber); text-shadow: 0 0 10px rgba(244, 162, 54, 0.9); }
+
+#find-log {
+  margin: 0;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--cream);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.keys-hint {
+  margin: 8px 2px 0;
+  font-size: 12.5px;
+  color: #8fa0bd;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* ---------- Overlays ---------- */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 26, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.overlay.hidden { display: none; }
+
+.card {
+  background: var(--indigo);
+  border: 2px solid var(--brass);
+  border-radius: 14px;
+  padding: 28px 34px;
+  max-width: 560px;
+  width: calc(100% - 40px);
+  text-align: center;
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.7);
+}
+
+.card h2 {
+  margin: 0 0 6px;
+  font-size: 32px;
+  color: var(--amber);
+}
+
+.card p { font-size: 16px; line-height: 1.5; margin: 8px 0; }
+
+.difficulties {
+  display: flex;
+  gap: 10px;
+  margin: 18px 0 6px;
+}
+
+.difficulties button {
+  flex: 1;
+  font-family: inherit;
+  background: var(--slate);
+  color: var(--cream);
+  border: 2px solid var(--brass);
+  border-radius: 10px;
+  padding: 12px 8px;
+  cursor: pointer;
+}
+
+.difficulties button:hover { background: var(--mahogany); border-color: var(--amber); }
+
+.difficulties button strong { display: block; font-size: 17px; color: var(--amber); }
+.difficulties button span { display: block; font-size: 13px; margin-top: 4px; line-height: 1.35; }
+
+#end-stats { margin: 14px 0; }
+#end-stats div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #2c3d5f;
+  padding: 7px 2px;
+  font-size: 16px;
+}
+#end-stats div span { color: #b9c4d8; }
+
+#end-rank {
+  font-size: 19px;
+  color: var(--amber);
+  font-style: italic;
+  margin: 10px 0 18px;
+}
+
+.card .primary {
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--indigo);
+  background: var(--amber);
+  border: none;
+  border-radius: 9px;
+  padding: 11px 26px;
+  cursor: pointer;
+}
+
+.card .primary:hover { background: #ffbe5c; }
+.card .fine { font-size: 13px; color: #8fa0bd; }
